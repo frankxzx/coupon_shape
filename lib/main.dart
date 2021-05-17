@@ -34,13 +34,27 @@ class CouponShapeBorder extends ShapeBorder {
     var h = rect.height;
     var d = h * 0.1;
 
-    path.addRect(rect);
-
+    _formCorner(path, rect);
     _formHoldLeft(path, rect, d);
     _formHoldRight(path, rect, w, d);
+    path.close();
 
     path.fillType = PathFillType.evenOdd;
     return path;
+  }
+
+  _formCorner(Path path, Rect rect) {
+    final r = 20.0;
+    path.lineTo(0.0, rect.height - r);
+    path.quadraticBezierTo(0.0, rect.height, r, rect.height);
+    path.lineTo(rect.width - r, rect.height);
+    path.quadraticBezierTo(
+        rect.width, rect.height, rect.width, rect.height - r);
+    path.lineTo(rect.width, r);
+    path.quadraticBezierTo(rect.width, 0.0, rect.width - r, 0.0);
+    path.lineTo(r, 0.0);
+    path.quadraticBezierTo(0.0, 0.0, 0.0, r);
+    path.close();
   }
 
   _formHoldLeft(Path path, Rect rect, double d) {
@@ -93,30 +107,6 @@ class CouponShapeBorder extends ShapeBorder {
   }
 }
 
-class RoundClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final r = 10.0;
-    final path = Path();
-    path.lineTo(0.0, size.height - r);
-    path.quadraticBezierTo(0.0, size.height, r, size.height);
-    path.lineTo(size.width - r, size.height);
-    path.quadraticBezierTo(
-        size.width, size.height, size.width, size.height - r);
-    path.lineTo(size.width, r);
-    path.quadraticBezierTo(size.width, 0.0, size.width - r, 0.0);
-    path.lineTo(r, 0.0);
-    path.quadraticBezierTo(0.0, 0.0, 0.0, r);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
-  }
-}
-
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -132,10 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         color: Color(0xFFF7F7F8),
         child: Center(
-          child: ClipPath(
-            clipper: RoundClipper(),
+          child: Container(
             child: Container(
-              color: Colors.white,
               child: Material(
                 color: Color(0xFFFFFFFF),
                 elevation: 1,
