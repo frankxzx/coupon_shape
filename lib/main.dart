@@ -7,17 +7,15 @@ import 'package:flutter/material.dart';
 
 import 'dart:typed_data';
 
+void main() {
+  runApp(MyApp());
+}
+
 class CouponShapeBorder extends ShapeBorder {
-  final int holeCount;
-  final double lineRate;
   final bool dash;
   final Color dashLineColor;
 
-  CouponShapeBorder(
-      {this.holeCount = 1,
-      this.lineRate = 0.718,
-      this.dash = true,
-      this.dashLineColor = Colors.white});
+  CouponShapeBorder({this.dash = true, this.dashLineColor = Colors.white});
 
   @override
   EdgeInsetsGeometry get dimensions => null;
@@ -29,10 +27,10 @@ class CouponShapeBorder extends ShapeBorder {
 
   @override
   Path getOuterPath(Rect rect, {TextDirection textDirection}) {
-    var path = Path();
-    var w = rect.width;
-    var h = rect.height;
-    var d = h * 0.1;
+    final path = Path();
+    final w = rect.width;
+    final h = rect.height;
+    final d = h * 0.1;
 
     _formCorner(path, rect);
     _formHoldLeft(path, rect, d);
@@ -58,29 +56,24 @@ class CouponShapeBorder extends ShapeBorder {
   }
 
   _formHoldLeft(Path path, Rect rect, double d) {
-    for (int i = 0; i < holeCount; i++) {
-      var left = -d / 2;
-      var top = (rect.height - d) * 0.6;
-      var right = left + d;
-      var bottom = top + d;
-      path.addArc(Rect.fromLTRB(left, top, right, bottom), -pi / 2, pi);
-    }
+    final left = -d / 2;
+    final top = (rect.height - d) * 0.6;
+    final right = left + d;
+    final bottom = top + d;
+    path.addArc(Rect.fromLTRB(left, top, right, bottom), -pi / 2, pi);
   }
 
   _formHoldRight(Path path, Rect rect, double w, double d) {
-    for (int i = 0; i < holeCount; i++) {
-      var left = -d / 2 + w;
-      // var top = 0.0 + d + 2 * d * (i);
-      var top = (rect.height - d) * 0.6;
-      var right = left + d;
-      var bottom = top + d;
-      path.addArc(Rect.fromLTRB(left, top, right, bottom), pi / 2, pi);
-    }
+    final left = -d / 2 + w;
+    final top = (rect.height - d) * 0.6;
+    final right = left + d;
+    final bottom = top + d;
+    path.addArc(Rect.fromLTRB(left, top, right, bottom), pi / 2, pi);
   }
 
   @override
   void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
-    var paint = Paint()
+    final paint = Paint()
       ..color = dashLineColor
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke
@@ -94,7 +87,7 @@ class CouponShapeBorder extends ShapeBorder {
 
   _drawDashLine(
       Canvas canvas, Offset start, double count, double length, Paint paint) {
-    var step = length / count / 2;
+    final step = length / count / 2;
     for (int i = 0; i < count; i++) {
       var offset = start + Offset(2 * step * i, 0);
       canvas.drawLine(offset + Offset(step, 0), offset, paint);
@@ -104,6 +97,79 @@ class CouponShapeBorder extends ShapeBorder {
   @override
   ShapeBorder scale(double t) {
     return null;
+  }
+}
+
+class CouponView extends StatelessWidget {
+  const CouponView({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Color(0xFFFFFFFF),
+      shadowColor: Colors.black26,
+      elevation: 4,
+      shape: CouponShapeBorder(dashLineColor: Colors.black12),
+      child: Container(
+        padding: EdgeInsets.all(20),
+        height: 340,
+        width: 380,
+        child: Container(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+              flex: 2,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      Container(
+                          margin: EdgeInsets.only(right: 12, bottom: 12),
+                          width: 60,
+                          height: 60,
+                          child: Image.memory(base64Decode(LogoBase64))),
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Startbucks',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                            Text('10-15% off', style: TextStyle(fontSize: 17)),
+                          ])
+                    ]),
+                    Text(
+                        'Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up',
+                        maxLines: 5,
+                        style: TextStyle(fontSize: 17, height: 1.5)),
+                  ])),
+          Expanded(
+              flex: 1,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Note', style: TextStyle(fontSize: 17, height: 1.5)),
+                    ...[
+                      '·Red and sliver card',
+                      '·Red and sliver card',
+                    ]
+                        .map((e) => Text(e,
+                            style: TextStyle(fontSize: 16, height: 1.5)))
+                        .toList()
+                  ])),
+        ])),
+      ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+    );
   }
 }
 
@@ -123,87 +189,10 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Color(0xFFF7F7F8),
         child: Center(
           child: Container(
-            child: Container(
-              child: Material(
-                color: Color(0xFFFFFFFF),
-                elevation: 1,
-                shape: CouponShapeBorder(dashLineColor: Colors.black12),
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  height: 340,
-                  width: 380,
-                  child: Container(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                        Expanded(
-                            flex: 2,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(children: [
-                                    Container(
-                                        margin: EdgeInsets.only(
-                                            right: 12, bottom: 12),
-                                        width: 60,
-                                        height: 60,
-                                        child: Image.memory(
-                                            base64Decode(LogoBase64))),
-                                    Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Startbucks',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold)),
-                                          Text('10-15% off',
-                                              style: TextStyle(fontSize: 17)),
-                                        ])
-                                  ]),
-                                  Text(
-                                      'Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up Enjoy up',
-                                      maxLines: 5,
-                                      style:
-                                          TextStyle(fontSize: 17, height: 1.5)),
-                                ])),
-                        Expanded(
-                            flex: 1,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Note',
-                                      style:
-                                          TextStyle(fontSize: 17, height: 1.5)),
-                                  ...[
-                                    '·Red and sliver card',
-                                    '·Red and sliver card',
-                                  ]
-                                      .map((e) => Text(e,
-                                          style: TextStyle(
-                                              fontSize: 16, height: 1.5)))
-                                      .toList()
-                                ])),
-                      ])),
-                ),
-              ),
-            ),
+            child: CouponView(),
           ),
         ),
       ),
-    );
-  }
-}
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
     );
   }
 }
